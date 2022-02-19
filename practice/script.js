@@ -1,15 +1,18 @@
-;(function () {
-  'use strict'
+;(function () {// 즉시 실행함수로 감싸져있음
+  'use strict' // 엄격모드 적용
 
+  // querySelector 쉽게 사용하는 Helper 함수
   const get = (target) => {
     return document.querySelector(target)
   }
 
+  const $todos = get('.todos');
+
   const createTodoElement = (item) => {
     const { id, content } = item
-    const $todoItem = document.createElement('div')
-    $todoItem.classList.add('item')
-    $todoItem.dataset.id = id
+    const $todoItem = document.createElement('div') // div Element 생성
+    $todoItem.classList.add('item') // item 클래스 추가
+    $todoItem.dataset.id = id // data id 추가
     $todoItem.innerHTML = `
             <div class="content">
               <input
@@ -39,6 +42,27 @@
     return $todoItem
   }
 
-  const init = () => {}
+  const renderAllTodos = (todos) => {
+    $todos.innerHTML = ''; // 초기화
+    todos.forEach(item => {
+      const todoElement = createTodoElement(item); // Element 생성
+      $todos.appendChild(todoElement); // 자식으로 추가
+    })
+  }
+
+  const getTodos = () => {
+    fetch('http://localhost:3000/todos')
+    .then((response) => response.json())
+    .then((todos) => renderAllTodos(todos))
+    .catch((error) => console.error(error));
+    // fetchApi로 데이터 가져오기, json으로 변환하고, 렌더링.
+  }
+
+  // 파일 실행되면 실행되는 init 함수
+  const init = () => {
+    window.addEventListener('DOMContentLoaded', () => {
+      getTodos();
+    })
+  }
   init()
 })()

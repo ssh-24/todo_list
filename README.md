@@ -17,6 +17,11 @@ https://github.com/typicode/json-server
 - 짧은 시간에 REST API를 구축해주는 패키지
 - 실제 프로덕션에서는 사용하지 않음
 - npm을 통해 설치 가능
+- 터미널에 npm install -g json-server
+- Create a db.json file with some data
+- json-server --watch db.json   (서버 실행)
+- localhost:3000에 접속해서 데이터 확인
+- localhost:3000/dataName/dataId (데이터 검색)
 
 ### DOMContentLoaded
 
@@ -35,14 +40,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
 https://developer.mozilla.org/ko/docs/Web/API/Fetch_API
 
 - AJAX 요청을 하기 위한 기술
-- AJAX란 서버에서 추가 정보를 비동기적으로 가져올 수 있게 해주는 포괄적인 기술을 나타내는 용어
+- AJAX란 서버에서 추가 정보를 *비동기적*으로 가져올 수 있게 해주는 포괄적인 기술을 나타내는 용어
 - XHR, JQuery, Fetch 등의 선택지가 있지만 이번 강의에서는 최신 기술인 fetch API를 사용
 
 #### fetch API 사용법
 
 https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Using_Fetch
 
-- fetch api의 response는 실제 json 이 아니다.
+- fetch api의 response는 실제 json 이 아니다.**
 - 따라서 fetch api에서는 추가 메서드를 호출해 응답 본문을 받을 필요가 있다. (`.json()`)
   - axios는 이 과정을 자동으로 해주기 떄문에 바로 response를 받을 수 있다.
 - body 데이터 타입은 헤더의 content-type 헤더와 일치해야 한다.
@@ -52,7 +57,7 @@ var url = 'https://example.com/profile';
 var data = {username: 'example'};
 
 fetch(url, {
-  method: 'POST', // or 'PUT'
+  method: 'POST', // or 'PUT' or 'GET'
   body: JSON.stringify(data), // data can be `string` or {object}!
   headers:{
     'Content-Type': 'application/json'
