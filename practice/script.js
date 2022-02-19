@@ -6,7 +6,10 @@
     return document.querySelector(target)
   }
 
+  const API_URL = 'http://localhost:3000/todos';
   const $todos = get('.todos');
+  const $form = get('.todo_form');
+  const $todoInput = get('.todo_input');
 
   const createTodoElement = (item) => {
     const { id, content } = item
@@ -51,11 +54,33 @@
   }
 
   const getTodos = () => {
-    fetch('http://localhost:3000/todos')
+    fetch(API_URL)
     .then((response) => response.json())
     .then((todos) => renderAllTodos(todos))
     .catch((error) => console.error(error));
-    // fetchApi로 데이터 가져오기, json으로 변환하고, 렌더링.
+    // fetchApi로 데이터 가져오기, json으로 변환하고, 렌더링, 자식에 추가
+  }
+
+  const addTodo = (e) => {
+    // 기본 submit 이벤트 동작 시 새로고침되는 것 제거
+    e.preventDefault();
+    // console.log($todoInput.value);
+    const todo = {
+      content: $todoInput.value,
+      completed: false,
+    }
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(todo),
+    }).then(getTodos)
+    .then(() => {
+      $todoInput.value = '',
+      $todoInput.focus()
+    }).catch((err) => console.log(err));
   }
 
   // 파일 실행되면 실행되는 init 함수
@@ -63,6 +88,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       getTodos();
     })
+
+    $form.addEventListener('submit', addTodo)
   }
   init()
 })()
