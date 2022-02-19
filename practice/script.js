@@ -6,7 +6,7 @@
     return document.querySelector(target)
   }
 
-  const API_URL = 'http://localhost:3000/todos';
+  const API_URL = 'http://localhost:3000/todos'; // 자주 쓰는 값, 상수화
   const $todos = get('.todos');
   const $form = get('.todo_form');
   const $todoInput = get('.todo_input');
@@ -91,5 +91,11 @@
 
     $form.addEventListener('submit', addTodo)
   }
+
+
+
+
+
+
   init()
 })()
