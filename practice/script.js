@@ -66,10 +66,17 @@
   const addTodo = (e) => {
     // 기본 submit 이벤트 동작 시 새로고침되는 것 제거
     e.preventDefault();
+
     // console.log($todoInput.value);
     const todo = {
       content: $todoInput.value,
       completed: false,
+    }
+    
+    // 내용 없을 시 종료
+    if (todo.content === '') {
+      alert("할 일을 입력해 주세요!");
+      return;
     }
 
     fetch(API_URL, {
@@ -166,6 +173,24 @@
     .catch(err => console.log(err))
   }
 
+
+  // 삭제 버튼
+  const removeTodo = (e) => {
+    if (e.target.className !== 'todo_remove_button') return
+
+    const $item = e.target.closest('.item')
+    const id = $item.dataset.id
+
+    if(confirm("정말 삭제하시겠습니까?\n삭제 시 복구되지 않습니다.")){
+    fetch(`${API_URL}/${id}`, {
+      method: 'DELETE' // headers나 body를 보낼 필요가 없음
+    })
+    .then(alert("삭제되었습니다!!"),getTodos)
+    .catch(err => console.log(err))
+    }
+    else alert("취소되었습니다!!")
+  }
+
   
   // 파일 실행되면 실행되는 init 함수
   const init = () => {
@@ -176,6 +201,7 @@
     $todos.addEventListener('click', toggleTodo)
     $todos.addEventListener('click', changeEditMode)
     $todos.addEventListener('click', editTodo)
+    $todos.addEventListener('click', removeTodo)
   }
   init()
 })()
