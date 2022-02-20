@@ -12,15 +12,17 @@
   const $todoInput = get('.todo_input');
 
   const createTodoElement = (item) => {
-    const { id, content } = item
+    const { id, content, completed } = item
     const $todoItem = document.createElement('div') // div Element 생성
+    const isChecked = completed ? 'checked' : '' // completed가 true면 checked (체크박스 체크표시), 아니면 공백
     $todoItem.classList.add('item') // item 클래스 추가
     $todoItem.dataset.id = id // data id 추가
     $todoItem.innerHTML = `
             <div class="content">
               <input
                 type="checkbox"
-                class='todo_checkbox' 
+                class='todo_checkbox'
+                ${isChecked}
               />
               <label>${content}</label>
               <input type="text" value="${content}" />
@@ -75,7 +77,7 @@
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(todo),
+      body: JSON.stringify(todo), // 위의 todo, content와 completed 가짐
     }).then(getTodos)
     .then(() => {
       $todoInput.value = '',
@@ -97,33 +99,83 @@
 
     // `(백틱) 으로 해야 $ 인식
     // 특정 id 와 통신
-    // PUT 은 전체, PATCH 는 부분
+    // **PUT 은 전체, PATCH 는 부분**
     fetch(`${API_URL}/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({completed}),
+      body: JSON.stringify({completed}), // e.target.checked
     })
     .then(getTodos)
     .catch(err => console.log(err))
   }
 
+
+  const changeEditMode = (e) => {
+    // item을 먼저 가져옴
+    const $item = e.target.closest('.item')
+    const $label = $item.querySelector('label')
+    const $editInput = $item.querySelector('input[type="text"]')
+    const $contentButtons = $item.querySelector('.content_buttons')
+    const $editButtons = $item.querySelector('.edit_buttons')
+    const value = $editInput.value // 미리 값 담아두기
+
+    // 편집 버튼
+    if (e.target.className === 'todo_edit_button') {
+      $label.style.display = 'none'
+      $editInput.style.display = 'block'
+      $contentButtons.style.display = 'none'
+      $editButtons.style.display = 'block'
+
+      $editInput.focus() // focus 처리, 값의 맨 앞으로 감
+      $editInput.value = ''; // 이렇게 한번 비우고 값을 다시 넣으면
+      $editInput.value = value; // 커서를 맨 뒤로 위치시킬 수 있음
+    }
+
+    // 취소 버튼
+    if (e.target.className === 'todo_edit_cancel_button') {
+      $label.style.display = 'block'
+      $editInput.style.display = 'none'
+      $contentButtons.style.display = 'block'
+      $editButtons.style.display = 'none'
+
+      $editInput.value = $label.innerText // 이전의 입력하다 취소한 값이 남아있지 않게
+    }
+  }
+  
+
+  const editTodo = (e) => {
+    // 확인 버튼 아닐 경우 return 
+    if (e.target.className !== 'todo_edit_confirm_button') return
+
+    const $item = e.target.closest('.item') // target과 가장 가까운 item찾아오기
+    const id = $item.dataset.id
+    const $editInput = $item.querySelector('input[type="text"]')
+    const content = $editInput.value // Input에 입력한 value 가져오기
+
+    // fetch로 데이터 수정
+    fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({content}), // editInput.value
+    })
+    .then(getTodos)
+    .catch(err => console.log(err))
+  }
+
+  
   // 파일 실행되면 실행되는 init 함수
   const init = () => {
     window.addEventListener('DOMContentLoaded', () => {
       getTodos();
     })
-
     $form.addEventListener('submit', addTodo)
-
     $todos.addEventListener('click', toggleTodo)
+    $todos.addEventListener('click', changeEditMode)
+    $todos.addEventListener('click', editTodo)
   }
-
-
-
-
-
-
   init()
 })()
