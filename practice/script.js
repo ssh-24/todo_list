@@ -83,6 +83,32 @@
     }).catch((err) => console.log(err));
   }
 
+
+  const toggleTodo = (e) => {
+    // 상위 .todos에 이벤트 등록 후, 특정 클래스일때만 동작하도록 제어
+    // console.log(e.target.className); // 이런 식으로 확인 가능
+    if (e.target.className !== 'todo_checkbox') return;
+
+    const $item = e.target.closest('.item')
+    console.log($item)
+    const id = $item.dataset.id; // item id 가져오기
+    console.log(id)
+    const completed = e.target.checked; // 체크 여부
+
+    // `(백틱) 으로 해야 $ 인식
+    // 특정 id 와 통신
+    // PUT 은 전체, PATCH 는 부분
+    fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({completed}),
+    })
+    .then(getTodos)
+    .catch(err => console.log(err))
+  }
+
   // 파일 실행되면 실행되는 init 함수
   const init = () => {
     window.addEventListener('DOMContentLoaded', () => {
@@ -90,6 +116,8 @@
     })
 
     $form.addEventListener('submit', addTodo)
+
+    $todos.addEventListener('click', toggleTodo)
   }
 
 
