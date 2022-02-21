@@ -141,7 +141,7 @@ let totalPage = Math.ceil(totalCount / limit) // 11
 ![](https://user-images.githubusercontent.com/16531837/145596540-7c1ff5e6-60f8-40fc-884b-c10f4f4716a2.png)
 
 현재 페이지가 몇번째 그룹에 속해있는지를 알아야
-현제 페이지 그룹 상의 첫번째 숫자와 마지막 숫자를 구할 수 있다.
+현재 페이지 그룹 상의 첫번째 숫자와 마지막 숫자를 구할 수 있다.
 
 ```js
 const currentPage = 1
