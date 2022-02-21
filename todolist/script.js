@@ -59,7 +59,7 @@
     fetch(API_URL)
     .then((response) => response.json())
     .then((todos) => renderAllTodos(todos))
-    .catch((error) => console.error(error));
+    .catch((error) => alert("서버연결 실패...\n 터미널 ==> json-server --watch db.json"));
     // fetchApi로 데이터 가져오기, json으로 변환하고, 렌더링, 자식에 추가
   }
 
