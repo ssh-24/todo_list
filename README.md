@@ -216,4 +216,3 @@ const prev = firstNumber - 1 // 6
 ### json-server
 
 https://github.com/typicode/json-server
-

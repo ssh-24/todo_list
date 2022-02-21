@@ -6,10 +6,76 @@
     return document.querySelector(target)
   }
 
-  const API_URL = 'http://localhost:3000/todos'; // 자주 쓰는 값, 상수화
+  const API_URL = 'http://localhost:3000/todos'; // 요청 URL
   const $todos = get('.todos');
   const $form = get('.todo_form');
   const $todoInput = get('.todo_input');
+  const $pagination = get('.pagination');
+
+  // 페이지네이션 설정 값
+  let currentPage = 1 // 현재 페이지
+  const totalCount = 52 // 임의 설정하는 총 데이터의 갯수
+  const pageCount = 5 // 화면에 나타날 페이지 갯수(버튼)
+  const limit = 5 // 한페이지 데이터 갯수
+
+  // 페이지네이션 함수, 첫 시작시 먼저 한 번 호출 필요
+  const pagination = () => {
+    let totalPage = Math.ceil(totalCount / limit) // 총 페이지
+    let pageGroup = Math.ceil(currentPage / pageCount)
+
+    let lastNumber = pageGroup * pageCount
+    if (lastNumber > totalPage) {
+      lastNumber = totalPage
+    }
+    let firstNumber = lastNumber - (pageCount - 1)
+
+    const next = lastNumber + 1
+    const prev = firstNumber - 1
+
+    let html = ''
+    
+    // 1 ~ 5만큼 페이지네이션 그려줌
+    if (prev > 0) {
+      html = `<button class="prev" data-fn="prev">이전</button>`
+    }
+    for (let i = firstNumber; i <= lastNumber; i++) {
+      // 숫자 버튼 생성
+      html += `<button class="pageNumber" id="page_${i}">${i}</button>`
+    }
+    if (lastNumber < totalPage) {
+      html += `<button class="prev" data-fn="next">다음</button>`
+    }
+    $pagination.innerHTML = html;
+  
+    // pageNumber의 id로 몇번째 페이지인지 찾기
+    const $currentPageNumber = get(`.pageNumber#page_${currentPage}`)
+    $currentPageNumber.style.color = '#9dc0e8'
+  
+
+    // 버튼들 가져오기
+    const $currentPageNumbers = document.querySelectorAll('.pagination button')
+    // click event 바인딩
+    $currentPageNumbers.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.fn === 'prev') {
+          // html에서 data-fn의 값이 prev 이면
+          currentPage = prev
+        }
+        else if (button.dataset.fn === 'next') {
+          // html에서 data-fn의 값이 next 이면
+          currentPage = next
+        }
+        else { // 버튼이 숫자인 경우
+          currentPage = button.innerText
+        }
+
+        // 다시 페이지, 항목들 새로고침
+        pagination()
+        getTodos()
+      })
+    })
+  }
+
 
   const createTodoElement = (item) => {
     const { id, content, completed } = item
@@ -56,7 +122,9 @@
   }
 
   const getTodos = () => {
-    fetch(API_URL)
+    // 페이지 단위로 끊어서 가져오도록 설정
+    // 현재 5개 단위로 가져온 첫번째 페이지를 보여줌
+    fetch(`${API_URL}?_page=${currentPage}&_limit=${limit}`)
     .then((response) => response.json())
     .then((todos) => renderAllTodos(todos))
     .catch((error) => console.error(error));
@@ -196,6 +264,7 @@
   const init = () => {
     window.addEventListener('DOMContentLoaded', () => {
       getTodos();
+      pagination();
     })
     $form.addEventListener('submit', addTodo)
     $todos.addEventListener('click', toggleTodo)
