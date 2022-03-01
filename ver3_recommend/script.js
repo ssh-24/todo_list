@@ -94,7 +94,7 @@
                 class='todo_checkbox'
                 ${isChecked}
               />
-              <label>${content}</label>
+              <label class="title">${content}</label>
               <input type="text" value="${content}" />
             </div>
             <div class="item_buttons content_buttons">
@@ -214,8 +214,11 @@
     const $editButtons = $item.querySelector('.edit_buttons')
     const value = $editInput.value // 미리 값 담아두기
 
-    // 편집 버튼
-    if (e.target.className === 'todo_edit_button') {
+    // 편집 버튼, 각 item의 label을 클릭해도 동작
+    if (
+      e.target.className === 'todo_edit_button' ||
+      e.target.className === 'title'
+    ) {
       $label.style.display = 'none'
       $editInput.style.display = 'block'
       $contentButtons.style.display = 'none'
@@ -226,8 +229,11 @@
       $editInput.value = value; // 커서를 맨 뒤로 위치시킬 수 있음
     }
 
-    // 취소 버튼
-    if (e.target.className === 'todo_edit_cancel_button') {
+    // 취소 버튼 or Esc(keyCode === 27) 입력시 동작
+    if (
+      e.target.className === 'todo_edit_cancel_button' ||
+      e.keyCode === 27
+    ) {
       $label.style.display = 'block'
       $editInput.style.display = 'none'
       $contentButtons.style.display = 'block'
@@ -239,24 +245,27 @@
   
 
   const editTodo = (e) => {
-    // 확인 버튼 아닐 경우 return 
-    if (e.target.className !== 'todo_edit_confirm_button') return
+    // 확인 버튼 or Enter(KeyCode === 13) 입력시 동작
+    if (
+      e.target.className === 'todo_edit_confirm_button' ||
+      e.keyCode === 13
+    ) {
+      const $item = e.target.closest('.item') // target과 가장 가까운 item찾아오기
+      const id = $item.dataset.id
+      const $editInput = $item.querySelector('input[type="text"]')
+      const content = $editInput.value // Input에 입력한 value 가져오기
 
-    const $item = e.target.closest('.item') // target과 가장 가까운 item찾아오기
-    const id = $item.dataset.id
-    const $editInput = $item.querySelector('input[type="text"]')
-    const content = $editInput.value // Input에 입력한 value 가져오기
-
-    // fetch로 데이터 수정
-    fetch(`${API_URL}/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({content}), // editInput.value
-    })
-    .then(getTodos)
-    .catch(err => console.log(err))
+      // fetch로 데이터 수정
+      fetch(`${API_URL}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({content}), // editInput.value
+      })
+      .then(getTodos)
+      .catch(err => console.log(err))
+    }
   }
 
 
@@ -288,7 +297,9 @@
     $form.addEventListener('submit', addTodo)
     $todos.addEventListener('click', toggleTodo)
     $todos.addEventListener('click', changeEditMode)
+    $todos.addEventListener('keydown', changeEditMode)
     $todos.addEventListener('click', editTodo)
+    $todos.addEventListener('keydown', editTodo)
     $todos.addEventListener('click', removeTodo)
     $todos.addEventListener('click', recommendTodo)
   }
