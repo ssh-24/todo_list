@@ -81,9 +81,10 @@
 
 
   const createTodoElement = (item) => {
-    const { id, content, completed } = item
-    const $todoItem = document.createElement('div') // div Element 생성
+    const { id, content, completed, recommended } = item
     const isChecked = completed ? 'checked' : '' // completed가 true면 checked (체크박스 체크표시), 아니면 공백
+    const isRecommended = recommended ? 'active' : '' // recommended가 true면 active, 아니면 공백
+    const $todoItem = document.createElement('div') // div Element 생성
     $todoItem.classList.add('item') // item 클래스 추가
     $todoItem.dataset.id = id // data id 추가
     $todoItem.innerHTML = `
@@ -97,6 +98,10 @@
               <input type="text" value="${content}" />
             </div>
             <div class="item_buttons content_buttons">
+              <button class="todo_recommend_button ${isRecommended}">
+                <i class="fas fa-solid fa-thumbs-up"></i>
+                <i class="far fa-solid fa-thumbs-up"></i>
+              </button>
               <button class="todo_edit_button">
                 <i class="far fa-edit"></i>
               </button>
@@ -184,6 +189,22 @@
   }
 
 
+  // 추천 기능
+  const recommendTodo = (e) => {
+    if (!e.target.classList.contains('todo_recommend_button')) return;
+    const $item = e.target.closest('.item') // 가장 가까운 요소중 item get
+    const id = $item.dataset.id
+    const recommended = !e.target.classList.contains('active')
+    fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({recommended}),
+    })
+    .then((response) => response.json())
+    .then(getTodos)
+    .catch((error) => console.error(error.message));
+  }
+
   const changeEditMode = (e) => {
     // item을 먼저 가져옴
     const $item = e.target.closest('.item')
@@ -269,6 +290,7 @@
     $todos.addEventListener('click', changeEditMode)
     $todos.addEventListener('click', editTodo)
     $todos.addEventListener('click', removeTodo)
+    $todos.addEventListener('click', recommendTodo)
   }
 
   init()

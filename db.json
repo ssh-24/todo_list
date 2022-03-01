@@ -3,107 +3,68 @@
     {
       "content": "알고리즘",
       "completed": false,
+      "recommended": true,
       "id": 1
     },
     {
       "content": "JS 공부",
       "completed": true,
+      "recommended": true,
       "id": 2
     },
     {
       "content": "복습",
       "completed": false,
+      "recommended": false,
       "id": 3
     },
     {
       "content": "운동",
       "completed": true,
+      "recommended": false,
       "id": 4
     },
     {
       "content": "프로젝트 진행",
       "completed": true,
+      "recommended": false,
       "id": 5
     },
     {
       "content": "이력서 작성",
       "completed": false,
+      "recommended": false,
       "id": 6
     },
     {
       "content": "Test 1",
       "completed": false,
+      "recommended": false,
       "id": 7
     },
     {
       "content": "Test 2",
       "completed": false,
+      "recommended": false,
       "id": 8
     },
     {
       "content": "Test 3",
       "completed": false,
+      "recommended": false,
       "id": 9
     },
     {
       "content": "Test 4",
       "completed": false,
+      "recommended": false,
       "id": 10
     },
     {
-      "content": "Test 5",
+      "content": "쳌쳌",
       "completed": false,
-      "id": 11
-    },
-    {
-      "content": "Test 6",
-      "completed": false,
-      "id": 12
-    },
-    {
-      "content": "Test 7",
-      "completed": false,
-      "id": 13
-    },
-    {
-      "content": "Test 8",
-      "completed": false,
-      "id": 14
-    },
-    {
-      "content": "Test 9",
-      "completed": false,
-      "id": 15
-    },
-    {
-      "content": "Test 10",
-      "completed": true,
-      "id": 16
-    },
-    {
-      "content": "Test 11",
-      "completed": false,
-      "id": 17
-    },
-    {
-      "content": "Test 12",
-      "completed": false,
-      "id": 18
-    },
-    {
-      "content": "Test 13",
-      "completed": false,
-      "id": 19
-    },
-    {
-      "content": "Test 15",
-      "completed": false,
-      "id": 20
-    },
-    {
-      "content": "Test 16",
-      "completed": false,
-      "id": 21
+      "id": 11,
+      "recommended": false
     }
   ]
 }
