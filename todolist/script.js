@@ -67,16 +67,11 @@
     // 기본 submit 이벤트 동작 시 새로고침되는 것 제거
     e.preventDefault();
 
-    // console.log($todoInput.value);
+    const content = $todoInput.value
+    if (!content) return; // 내용 없을 시 종료
     const todo = {
-      content: $todoInput.value,
+      content,
       completed: false,
-    }
-    
-    // 내용 없을 시 종료
-    if (todo.content === '') {
-      alert("할 일을 입력해 주세요!");
-      return;
     }
 
     fetch(API_URL, {
@@ -99,9 +94,7 @@
     if (e.target.className !== 'todo_checkbox') return;
 
     const $item = e.target.closest('.item')
-    console.log($item)
     const id = $item.dataset.id; // item id 가져오기
-    console.log(id)
     const completed = e.target.checked; // 체크 여부
 
     // `(백틱) 으로 해야 $ 인식
@@ -114,8 +107,9 @@
       },
       body: JSON.stringify({completed}), // e.target.checked
     })
+    .then((response) => response.json())
     .then(getTodos)
-    .catch(err => console.log(err))
+    .catch((error) => console.error(error.message));
   }
 
 

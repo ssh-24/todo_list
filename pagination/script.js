@@ -1,10 +1,14 @@
 ;(function () {// 즉시 실행함수로 감싸져있음
   'use strict' // 엄격모드 적용
 
-  // querySelector 쉽게 사용하는 Helper 함수
+  // Helper 함수
   const get = (target) => {
     return document.querySelector(target)
   }
+  const getAll = (target) => {
+    return document.querySelectorAll(target)
+  }
+
 
   const API_URL = 'http://localhost:3000/todos'; // 요청 URL
   const $todos = get('.todos');
@@ -36,7 +40,7 @@
     
     // 1 ~ 5만큼 페이지네이션 그려줌
     if (prev > 0) {
-      html = `<button class="prev" data-fn="prev">이전</button>`
+      html += `<button class="prev" data-fn="prev">이전</button>`
     }
     for (let i = firstNumber; i <= lastNumber; i++) {
       // 숫자 버튼 생성
@@ -53,7 +57,7 @@
   
 
     // 버튼들 가져오기
-    const $currentPageNumbers = document.querySelectorAll('.pagination button')
+    const $currentPageNumbers = getAll('.pagination button')
     // click event 바인딩
     $currentPageNumbers.forEach((button) => {
       button.addEventListener('click', () => {
@@ -135,18 +139,13 @@
     // 기본 submit 이벤트 동작 시 새로고침되는 것 제거
     e.preventDefault();
 
-    // console.log($todoInput.value);
+    const content = $todoInput.value
+    if (!content) return; // 내용 없을 시 종료
     const todo = {
-      content: $todoInput.value,
+      content,
       completed: false,
     }
     
-    // 내용 없을 시 종료
-    if (todo.content === '') {
-      alert("할 일을 입력해 주세요!");
-      return;
-    }
-
     fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -157,7 +156,7 @@
     .then(() => {
       $todoInput.value = '',
       $todoInput.focus()
-    }).catch((err) => console.log(err));
+    }).catch((error) => console.error(error.message));
   }
 
 
@@ -167,9 +166,7 @@
     if (e.target.className !== 'todo_checkbox') return;
 
     const $item = e.target.closest('.item')
-    console.log($item)
     const id = $item.dataset.id; // item id 가져오기
-    console.log(id)
     const completed = e.target.checked; // 체크 여부
 
     // `(백틱) 으로 해야 $ 인식
@@ -182,8 +179,9 @@
       },
       body: JSON.stringify({completed}), // e.target.checked
     })
+    .then((response) => response.json())
     .then(getTodos)
-    .catch(err => console.log(err))
+    .catch((error) => console.error(error.message));
   }
 
 

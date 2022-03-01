@@ -2,7 +2,7 @@
   "todos": [
     {
       "content": "알고리즘",
-      "completed": false,
+      "completed": true,
       "id": 1
     },
     {
@@ -17,7 +17,7 @@
     },
     {
       "content": "운동",
-      "completed": false,
+      "completed": true,
       "id": 4
     },
     {
@@ -77,7 +77,7 @@
     },
     {
       "content": "Test 10",
-      "completed": false,
+      "completed": true,
       "id": 16
     }
   ]
